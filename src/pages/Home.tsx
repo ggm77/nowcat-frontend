@@ -68,7 +68,7 @@ function Home() {
                 {!mainImageLoaded && (
                     <p>Loading main image...</p>
                 )}
-                <img src={mainImageUrl} alt="Main" onLoad={() => setMainImageLoaded(true)} style={{display: mainImageLoaded ? 'block' : 'none'}}/>
+                <img src={mainImageUrl} alt="Main" onLoad={() => setMainImageLoaded(true)} style={{display: mainImageLoaded ? 'block' : 'none', width: '300px'}}/>
             </div>
             
             <hr/>
