@@ -1,0 +1,280 @@
+:root {
+    --bg-dark: #09090b;
+    --primary-accent: #f43f5e;
+    --text-light: #ffffff;
+    --text-dim: #a1a1aa;
+    --ratio: calc(300 / 224);
+    --ratio-pct: 74.66%;
+}
+
+.AppContainer {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.SpotlightBG {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center top, #2a1b24 0%, #09090b 60%);
+    z-index: 0;
+}
+
+.Container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.LiveBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(244, 63, 94, 0.15);
+    color: var(--primary-accent);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.PulsingDot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+/* 헤더 */
+.BattleHeader {
+    text-align: center;
+}
+
+.BattleHeader h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.Highlight {
+    background: linear-gradient(to right, var(--primary-accent), #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ChallengerText {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+}
+
+/* 메인 이미지 부분 */
+.ThroneSection {
+    width: 100%;
+    position: relative;
+    filter: drop-shadow(0 20px 40px rgba(244, 63, 94, 0.2));
+    will-change: filter;
+}
+
+.RatioFrame {
+    width: 100%;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    background: #000;
+}
+
+@supports (aspect-ratio: var(--ratio)) {
+    .RatioFrame {
+        aspect-ratio: var(--ratio);
+    }
+}
+
+@supports not (aspect-ratio: var(--ratio)) {
+    .RatioFrame {
+        /* 가로 대비 세로 비율 계산: (224 / 300) * 100 = 74.66% */
+        padding-top: var(--ratio-pct); 
+    }
+
+    /* Padding Hack 사용 시 내부 요소들을 절대 위치로 고정해야 함 */
+    .RatioFrame img, 
+    .Skeleton, 
+    .ShineEffect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* 스켈레톤 애니메이션 */
+@keyframes skeleton-gradient {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.Skeleton {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
+    background-size: 200% 100%;
+    animation: skeleton-gradient 1.5s infinite linear;
+    border-radius: 24px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* 이미지 로드 전후 처리 */
+.RatioFrame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    /* z-index를 주어 스케렐톤보다 위로 올림 */
+    z-index: 2; 
+}
+
+.RatioFrame img.loaded {
+    opacity: 1;
+}
+
+.ShineEffect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+    pointer-events: none;
+}
+
+/* 이미지 업로드 부분 */
+.SlimUploadBar {
+    display: block;
+    width: 100%;
+    background: linear-gradient(to right, #18181b, #27272a);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.SlimUploadBar:hover {
+    background: linear-gradient(to right, var(--primary-accent), #ec4899);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px -10px rgba(244, 63, 94, 0.5);
+}
+
+.BarContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 700;
+}
+
+/* 업로드 중일 때의 스타일 */
+.SlimUploadBar.Uploading {
+    background: #27272a; /* hover 색상 방지 */
+    cursor: not-allowed;
+    opacity: 0.8;
+    transform: none !important; /* hover 애니메이션 무력화 */
+    box-shadow: none !important;
+}
+
+.SlimUploadBar.Uploading:hover {
+    background: #27272a; /* hover 시에도 색상 고정 */
+}
+
+/* 로딩 스피너 애니메이션 */
+.Spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--primary-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); } }
+
+@keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 푸터 */
+.SiteFooter {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+}
+
+.FooterContent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.FooterColumn h3 {
+    font-size: 0.75rem;
+    color: var(--primary-accent);
+    letter-spacing: 1.5px;
+    margin-bottom: 1.2rem;
+}
+
+.FooterColumn p, .FooterColumn li {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    list-style: none;
+}
+
+.FooterColumn a {
+    color: var(--text-light);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--text-dim);
+}
+
+@media (max-width: 768px) {
+    .FooterContent {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
+
+.Copyright {
+    margin-top: 3rem;
+    font-size: 0.75rem !important;
+    opacity: 0.5;
+}
