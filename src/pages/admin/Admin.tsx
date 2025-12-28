@@ -1,5 +1,7 @@
-import { useState, type ChangeEvent } from 'react';
-import api from '../api/api';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/api';
+import AuthorizedImage from '../../components/AuthorizedImage';
 
 interface ImageResponse {
     id: number;
@@ -9,19 +11,20 @@ interface ImageResponse {
 
 function Admin() {
 
-    const [adminSecretKey, setAdminSecretKey] = useState<string>("");
-
+    const [accessToken, setAccessToken] = useState<string>(localStorage.getItem('accessToken') || '');
     const [notConfirmedImages, setNotConfirmedImages] = useState<ImageResponse[]>([]);
-
-    const handleAdminSecretKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setAdminSecretKey(e.target.value);
-    }
+    const navigate = useNavigate();
 
     const getNotConfirmedImages = async () => {
         try {
+            if(!accessToken || accessToken === '') {
+                alert('관리자 로그인이 필요합니다.');
+                return;
+            }
+
             const response = await api.get('/admin/images?confirmed=false', {
                 headers: {
-                    'Admin-Secret-Key': adminSecretKey,
+                    'Authorization': 'Bearer ' + accessToken,
                 },
             });
             setNotConfirmedImages(response.data.images);
@@ -33,9 +36,15 @@ function Admin() {
 
     const confirmImage = async (imageId: number) => {
         try {
+
+            if(!accessToken || accessToken === '') {
+                alert('관리자 로그인이 필요합니다.');
+                return;
+            }
+
             await api.post(`/admin/images/${imageId}/confirmation`, {imageId}, {
                 headers: {
-                    'Admin-Secret-Key': adminSecretKey,
+                    'Authorization': 'Bearer ' + accessToken,
                 },
             });
             alert('이미지 컨펌 성공!');
@@ -44,11 +53,18 @@ function Admin() {
         }
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setAccessToken('');
+        alert('로그아웃 되었습니다.');
+        navigate('/admin/login', { replace: false });
+    }
+
     return (
         <div>
             <div>
-                <p>관리자 비밀 키</p>
-                <input type="password" value={adminSecretKey} onChange={handleAdminSecretKeyChange} placeholder='관리자 비밀 키를 입력하세요' />
+                <button onClick={handleLogout}>로그아웃</button>
             </div>
             <div style={{"display": "flex"}}>
                 <p>컨펌 안된 이미지들</p>
@@ -68,6 +84,11 @@ function Admin() {
                             <span><strong>ID:</strong> {image.id}</span>
                             <span><strong>파일명:</strong> {image.name}</span>
                             <span><strong>생성일:</strong> {image.createdAt}</span>
+                            <span><AuthorizedImage
+                                imageId={image.id}
+                                accessToken={accessToken}
+                                style={{ width: '25px', height: '25px'}}
+                            /></span>
                             <button onClick={() => confirmImage(image.id)}>컨펌</button>
                         </li>
                     ))}
