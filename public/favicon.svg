@@ -1,0 +1,10 @@
+<svg width="136" height="136" viewBox="0 0 136 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="68" cy="68" r="68" fill="white"/>
+<ellipse cx="57" cy="92" rx="24" ry="22" transform="rotate(-10 57 92)" fill="#FFACAC"/>
+<ellipse cx="79.0001" cy="92" rx="24" ry="22" transform="rotate(10 79.0001 92)" fill="#FFACAC"/>
+<rect x="45" y="50" width="46" height="54" rx="23" fill="#FFACAC"/>
+<circle cx="27" cy="55" r="11" fill="#FFACAC"/>
+<circle cx="51" cy="31" r="11" fill="#FFACAC"/>
+<circle cx="85" cy="31" r="11" fill="#FFACAC"/>
+<circle cx="109" cy="55" r="11" fill="#FFACAC"/>
+</svg>
