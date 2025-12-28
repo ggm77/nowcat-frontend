@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import AuthorizedImage from '../../components/AuthorizedImage';
@@ -14,6 +14,12 @@ function Admin() {
     const [accessToken, setAccessToken] = useState<string>(localStorage.getItem('accessToken') || '');
     const [notConfirmedImages, setNotConfirmedImages] = useState<ImageResponse[]>([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(!accessToken || accessToken === '') {
+            navigate('/', { replace: true });
+        }
+    }, [accessToken, navigate]);
 
     const getNotConfirmedImages = async () => {
         try {
