@@ -155,7 +155,7 @@ function Home() {
                     <div className='FooterContent'>
                         <div className='FooterColumn'>
                             <h3>ABOUT</h3>
-                            <p>지금 이 순간, 귀여운 내 고양이를 자랑하자!</p>
+                            <p>지금 이 순간의 귀여운 내 고양이를 자랑하자!</p>
                             <p>검토를 마친 단 한 장의 최신 이미지가 메인 화면의 주인공이 됩니다.</p>
                         </div>
 

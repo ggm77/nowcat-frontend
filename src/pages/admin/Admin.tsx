@@ -48,7 +48,7 @@ function Admin() {
                 return;
             }
 
-            await api.post(`/admin/images/${imageId}/confirmation`, {imageId}, {
+            await api.patch(`/admin/images/${imageId}/confirmation`, {isConfirmed: true}, {
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
                 },
