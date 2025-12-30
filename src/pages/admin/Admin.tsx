@@ -36,6 +36,15 @@ function Admin() {
             setNotConfirmedImages(response.data.images);
             console.log('Not confirmed images:', response.data.images);
         } catch (error) {
+
+            const err = error as any;
+
+            if(err.response && err.response.status === 403) {
+                alert('관리자 인증에 실패했습니다. 다시 로그인해주세요.');
+                navigate('/admin/login', { replace: true });
+                return;
+            }
+
             console.error('Error fetching not confirmed images:', error);
         }
     }
@@ -69,8 +78,9 @@ function Admin() {
 
     return (
         <div>
-            <div>
+            <div style={{"display": "flex" }}>
                 <button onClick={handleLogout}>로그아웃</button>
+                <a href='/'>홈</a>
             </div>
             <div style={{"display": "flex"}}>
                 <p>컨펌 안된 이미지들</p>
