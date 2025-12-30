@@ -77,7 +77,7 @@ function Admin() {
     }
 
     return (
-        <div>
+        <div style={{ "color": "#fff"}}>
             <div style={{"display": "flex" }}>
                 <button onClick={handleLogout}>로그아웃</button>
                 <a href='/'>홈</a>

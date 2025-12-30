@@ -29,7 +29,7 @@ function Login() {
     }
 
     return (
-        <div>
+        <div style={{ "color": "#fff"}}>
             <h2>Admin Login Page</h2>
             <form onSubmit={handleLogin}>
                 <input 
