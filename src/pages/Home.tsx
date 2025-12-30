@@ -51,15 +51,43 @@ function Home() {
         fetchMainImage();
     }, []);
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
+            let file = e.target.files[0];
+            const fileName = file.name.toLowerCase();
+
+            const isHeic = fileName.endsWith(".heic") || fileName.endsWith(".heif");
             const allowdTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
-            if(!allowdTypes.includes(file.type)) {
-                alert('지원하지 않는 파일 형식입니다. jpg, jpeg, png 파일만 업로드 가능합니다.');
+            if(!isHeic && !allowdTypes.includes(file.type)) {
+                alert('지원하지 않는 파일 형식입니다. jpg, jpeg, png, heic 파일만 업로드 가능합니다.');
                 e.target.value = '';
                 return;
+            }
+
+            if (isHeic) {
+                setIsUploading(true);
+
+                try {
+                    const heic2any = (await import('heic2any')).default;
+
+                    const convertedBlob = await heic2any({
+                        blob: file,
+                        toType: "image/jpeg",
+                        quality: 0.8
+                    })
+
+                    const resultBlob = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+
+                    file = new File([resultBlob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                        type: "image/jpeg",
+                    });
+                } catch (error) {
+                    console.error("HEIC 변환 실패:", error);
+                    alert("이미지 변환 중 오류가 발생했습니다.");
+                    setIsUploading(false);
+                    return;
+                }
             }
 
             handleUpload(file);
@@ -143,7 +171,7 @@ function Home() {
                             type='file'
                             id='ChallengerUpload'
                             hidden
-                            accept='.jpg,.jpeg,.png'
+                            accept='.jpg,.jpeg,.png,.heic,.heif'
                             onChange={handleFileChange}
                             disabled={isUploading}
                         />
