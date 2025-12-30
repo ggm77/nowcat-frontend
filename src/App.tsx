@@ -1,12 +1,28 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom'
+import ReactGA from 'react-ga4';
 import Home from './pages/Home';
 import Admin from './pages/admin/Admin';
 import Login from './pages/admin/Login';
 
+const GA_TRACKING_ID = import.meta.env.VITE_GA_ID;
+
 function App() {
 
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.initialize(GA_TRACKING_ID);
+  }, []);
+
+  useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname + location.search
+    });
+  }, [location]);
+
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -15,7 +31,6 @@ function App() {
           <Route path="login" element={<Login />} />
         </Route>
       </Routes>
-    </BrowserRouter>
   )
 }
 
